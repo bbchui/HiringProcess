@@ -2,8 +2,6 @@ let fs = require('fs');
 let text = fs.readFileSync("./input.txt", "utf-8");
 let textByLine = text.split('\n');
 
-console.log(textByLine);
-
 let outputText = [];
 let applicants = {};
 let stages = {};
@@ -25,17 +23,17 @@ const create = function(name) {
     applicants[name] = firstStage;
     stages[firstStage] += 1;
     outputText.push(`CREATE ${name}`);
-
   }
 }
 
 const stageCreator = function(defineLine) {
-  let str = defineLine.split(" ");
+  let str = defineLine
   for (var i = 1; i < str.length; i++) {
     stages[str[i]] = 0;
   }
   stages["Hired"] = 0;
   stages["Rejected"] = 0;
+  outputText.push(defineLine.join(" "))
 }
 
 const stats = function(stage) {
@@ -106,7 +104,28 @@ const decide = function(name, num) {
   }
 }
 
-
+const readInput = function(input) {
+  for (var i = 0; i < input.length; i++) {
+    let line = input[i].split(" ");
+    let command = line[0]
+    if (command === "DEFINE") {
+      stageCreator(line);
+    } else if (command === "STATS") {
+      stats(stages);
+    } else if (command === "CREATE") {
+      create(line[1]);
+    } else if (command === "ADVANCE") {
+      let name = line[1];
+      let stageName = line[2];
+      advance(name, stageName)
+    } else if (command === "DECIDE") {
+      console.log(command);
+      let name = line[1];
+      let choice = line[2];
+      decide(name, parseInt(choice));
+    }
+  }
+}
 
 // stageCreator("DEFINE ManualReview BackgroundCheck DocumentSigning")
 // stats(stages)
@@ -126,4 +145,15 @@ const decide = function(name, num) {
 // stats(stages)
 //
 //
-// console.log(outputText);
+
+readInput(textByLine);
+// console.log(textByLine[0].split(" ")[0] === "DEFINE");
+// let output = fs.writeFileSync("output.txt")
+// output.appendFileSync()
+
+console.log(outputText);
+
+let output = fs.writeFileSync("output.txt", "");
+for (var i = 0; i < outputText.length; i++) {
+  fs.appendFileSync("output.txt", outputText[i] + "\n");
+}

@@ -2,11 +2,10 @@ let fs = require('fs');
 let text = fs.readFileSync("./input.txt", "utf-8");
 let textByLine = text.split('\n');
 
-// console.log(textByLine);
+console.log(textByLine);
+
 let outputText = [];
-
 let applicants = {};
-
 let stages = {};
 
 // Incase DEFINE not in txt file
@@ -53,7 +52,7 @@ const advance = function(name, stageName) {
   let idx = stg.indexOf(stageName);
   let currentStage = applicants[name];
   let currentStageIdx = stg.indexOf(currentStage);
-  let lastStage = stg[stg.length - 1];
+  let lastStage = stg[stg.length - 3];
   let lastStageIdx = stg.indexOf(lastStage);
 
   if (!(name in applicants)) {
@@ -86,21 +85,45 @@ const advance = function(name, stageName) {
   }
 }
 
-stageCreator("DEFINE ManualReview BackgroundCheck DocumentSigning")
-stats(stages)
-create("hi")
-create("hi")
-stats(stages)
-advance("hi")
-stats(stages)
-advance("hi", "BackgroundCheck")
-stats(stages)
-advance("hi", "DocumentSigning")
-stats(stages)
-advance("hi", "DocumentSigning")
-stats(stages)
+const decide = function(name, num) {
+  //assume people cannot get hired after being rejected
+  let stg = Object.keys(stages);
+  let currentStage = applicants[name];
+  let currentStageIdx = stg.indexOf(currentStage);
+  let lastStage = stg[stg.length - 3];
+  let lastStageIdx = stg.indexOf(lastStage);
+
+  if (currentStageIdx === lastStageIdx && num === 1) {
+    stages["Hired"] += 1;
+    stages[lastStage] -= 1;
+    outputText.push(`Hired ${name}`);
+  } else if (num === 0) {
+    stages["Rejected"] += 1;
+    stages[applicants[name]] -= 1;
+    outputText.push(`Rejected ${name}`);
+  } else if (currentStageIdx < lastStageIdx && num === 1) {
+    outputText.push(`Failed to decide for ${name}`);
+  }
+}
 
 
-console.log(outputText);
 
-//assume people cannot get hired after being rejected
+// stageCreator("DEFINE ManualReview BackgroundCheck DocumentSigning")
+// stats(stages)
+// create("pikapika325@gmail.com")
+// create("boiboy325@gmail.com")
+// stats(stages)
+// advance("pikapika325@gmail.com")
+// stats(stages)
+// advance("pikapika325@gmail.com", "BackgroundCheck")
+// stats(stages)
+// advance("pikapika325@gmail.com", "DocumentSigning")
+// stats(stages)
+// advance("pikapika325@gmail.com", "DocumentSigning")
+// stats(stages)
+// decide("pikapika325@gmail.com", 1)
+// decide("boiboy325@gmail.com", 0)
+// stats(stages)
+//
+//
+// console.log(outputText);

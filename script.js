@@ -5,7 +5,7 @@ let textByLine = text.split('\n');
 // console.log(textByLine);
 let outputText = [];
 
-let applicants = [];
+let applicants = {};
 
 let stages = {};
 
@@ -13,15 +13,20 @@ let stages = {};
 DEFAULT_STAGES = {"ManualReview" : 0,
                   "PhoneInterview" : 0,
                   "BackgroundCheck" : 0,
-                  "DocumentSigning" : 0}
+                  "DocumentSigning" : 0,
+                  "Hired" : 0,
+                  "Rejected" : 0}
 
 
 const create = function(name) {
-  if (!applicants.includes(name)) {
-    applicants.push(name);
-    outputText.push(`CREATE ${name}`);
-  } else {
+  if (name in applicants) {
     outputText.push("Duplicate Applicant");
+  } else {
+    let firstStage = Object.keys(stages)[0];
+    applicants[name] = firstStage;
+    stages[firstStage] += 1;
+    outputText.push(`CREATE ${name}`);
+
   }
 }
 
@@ -30,6 +35,8 @@ const stageCreator = function(defineLine) {
   for (var i = 1; i < str.length; i++) {
     stages[str[i]] = 0;
   }
+  stages["Hired"] = 0;
+  stages["Rejected"] = 0;
 }
 
 const stats = function(stage) {
@@ -41,9 +48,59 @@ const stats = function(stage) {
   outputText.push(record.join(" "));
 }
 
+const advance = function(name, stageName) {
+  let stg = Object.keys(stages);
+  let idx = stg.indexOf(stageName);
+  let currentStage = applicants[name];
+  let currentStageIdx = stg.indexOf(currentStage);
+  let lastStage = stg[stg.length - 1];
+  let lastStageIdx = stg.indexOf(lastStage);
 
-create("hi")
-create("hi")
+  if (!(name in applicants)) {
+    // Assuming someone may not be in the database or their name is mispelled
+    outputText.push(`${name} does not exist in the system`);
+    return;
+  }
+
+  if (stageName === currentStage) {
+    outputText.push(`Already in ${stageName}`);
+  } else if (currentStageIdx === lastStageIdx) {
+    outputText.push(`Already in ${lastStage}`);
+  } else if (currentStageIdx < lastStageIdx && idx === -1) {
+    previousStage = currentStage;
+    currentStageIdx += 1;
+    applicants[name] = stg[currentStageIdx];
+    currentStage = stg[currentStageIdx]
+    stages[previousStage] -= 1;
+    stages[currentStage] += 1;
+    outputText.push(`ADVANCE ${name}`);
+  } else if (currentStageIdx < lastStageIdx && idx !== -1) {
+    // Will assume applicants cannot go back to previous hiring stages
+    previousStage = currentStage;
+    currentStageIdx = idx;
+    applicants[name] = stg[currentStageIdx];
+    currentStage = stg[currentStageIdx]
+    stages[previousStage] -= 1;
+    stages[currentStage] += 1;
+    outputText.push(`ADVANCE ${name}`);
+  }
+}
+
 stageCreator("DEFINE ManualReview BackgroundCheck DocumentSigning")
 stats(stages)
+create("hi")
+create("hi")
+stats(stages)
+advance("hi")
+stats(stages)
+advance("hi", "BackgroundCheck")
+stats(stages)
+advance("hi", "DocumentSigning")
+stats(stages)
+advance("hi", "DocumentSigning")
+stats(stages)
+
+
 console.log(outputText);
+
+//assume people cannot get hired after being rejected

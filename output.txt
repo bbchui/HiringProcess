@@ -8,3 +8,14 @@ Hired paul@fountain.com
 Failed to decide for dan@fountain.com
 ADVANCE dan@fountain.com
 Hired dan@fountain.com
+CREATE dane@fountain.com
+ManualReview 1 BackgroundCheck 0 Hired 2 Rejected 0
+CREATE paule@fountain.com
+Duplicate Applicant
+ADVANCE paule@fountain.com
+Already in BackgroundCheck
+Hired paule@fountain.com
+Failed to decide for dane@fountain.com
+ADVANCE dane@fountain.com
+Hired dane@fountain.com
+ManualReview 0 BackgroundCheck 0 Hired 4 Rejected 0

@@ -7,14 +7,14 @@ let applicants = {};
 let stages = {};
 
 // Incase DEFINE not in txt file
-DEFAULT_STAGES = {"ManualReview" : 0,
-                  "PhoneInterview" : 0,
-                  "BackgroundCheck" : 0,
-                  "DocumentSigning" : 0,
-                  "Hired" : 0,
-                  "Rejected" : 0}
+// DEFAULT_STAGES = {"ManualReview" : 0,
+//                   "PhoneInterview" : 0,
+//                   "BackgroundCheck" : 0,
+//                   "DocumentSigning" : 0,
+//                   "Hired" : 0,
+//                   "Rejected" : 0}
 
-
+// Create applicant
 const create = function(name) {
   if (name in applicants) {
     outputText.push("Duplicate Applicant");
@@ -26,6 +26,7 @@ const create = function(name) {
   }
 }
 
+// Setup stages of hiring process
 const stageCreator = function(defineLine) {
   let str = defineLine
   for (var i = 1; i < str.length; i++) {
@@ -36,6 +37,7 @@ const stageCreator = function(defineLine) {
   outputText.push(defineLine.join(" "))
 }
 
+// Show how many applicants in each stage
 const stats = function(stage) {
   let record = [];
   Object.keys(stage).forEach(key => {
@@ -45,6 +47,7 @@ const stats = function(stage) {
   outputText.push(record.join(" "));
 }
 
+// Advance applicants
 const advance = function(name, stageName) {
   let stg = Object.keys(stages);
   let idx = stg.indexOf(stageName);
@@ -83,8 +86,9 @@ const advance = function(name, stageName) {
   }
 }
 
+// Decide whether or not to hire applicant
 const decide = function(name, num) {
-  //assume people cannot get hired after being rejected
+  //assume people cannot get hired after being rejected and vice versa
   let stg = Object.keys(stages);
   let currentStage = applicants[name];
   let currentStageIdx = stg.indexOf(currentStage);
@@ -104,6 +108,7 @@ const decide = function(name, num) {
   }
 }
 
+// Reads input file line by line
 const readInput = function(input) {
   for (var i = 0; i < input.length; i++) {
     let line = input[i].split(" ");
@@ -119,7 +124,6 @@ const readInput = function(input) {
       let stageName = line[2];
       advance(name, stageName)
     } else if (command === "DECIDE") {
-      console.log(command);
       let name = line[1];
       let choice = line[2];
       decide(name, parseInt(choice));
@@ -127,31 +131,8 @@ const readInput = function(input) {
   }
 }
 
-// stageCreator("DEFINE ManualReview BackgroundCheck DocumentSigning")
-// stats(stages)
-// create("pikapika325@gmail.com")
-// create("boiboy325@gmail.com")
-// stats(stages)
-// advance("pikapika325@gmail.com")
-// stats(stages)
-// advance("pikapika325@gmail.com", "BackgroundCheck")
-// stats(stages)
-// advance("pikapika325@gmail.com", "DocumentSigning")
-// stats(stages)
-// advance("pikapika325@gmail.com", "DocumentSigning")
-// stats(stages)
-// decide("pikapika325@gmail.com", 1)
-// decide("boiboy325@gmail.com", 0)
-// stats(stages)
-//
-//
 
 readInput(textByLine);
-// console.log(textByLine[0].split(" ")[0] === "DEFINE");
-// let output = fs.writeFileSync("output.txt")
-// output.appendFileSync()
-
-console.log(outputText);
 
 let output = fs.writeFileSync("output.txt", "");
 for (var i = 0; i < outputText.length; i++) {

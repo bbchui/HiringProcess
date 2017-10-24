@@ -8,3 +8,14 @@ DECIDE paul@fountain.com 1
 DECIDE dan@fountain.com 1
 ADVANCE dan@fountain.com
 DECIDE dan@fountain.com 1
+CREATE dane@fountain.com
+STATS
+CREATE paule@fountain.com
+CREATE paule@fountain.com
+ADVANCE paule@fountain.com
+ADVANCE paule@fountain.com BackgroundCheck
+DECIDE paule@fountain.com 1
+DECIDE dane@fountain.com 1
+ADVANCE dane@fountain.com
+DECIDE dane@fountain.com 1
+STATS
